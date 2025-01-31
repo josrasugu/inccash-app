@@ -6,16 +6,22 @@ const Footer = ({ navigation }) => {
   const gotToProfile = () => {
     navigation.navigate("Profile");
   };
+  const gotToReferral = () => {
+    navigation.navigate("Referral");
+  };
+  const gotToHome = () => {
+    navigation.navigate("Home");
+  };
 
   return (
     <View style={styles.footer}>
-      <TouchableOpacity style={styles.footerIcon}>
+      <TouchableOpacity style={styles.footerIcon} onPress={gotToHome}>
         <Ionicons name="home-outline" size={24} color="black" />
         <Text>Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.footerIcon}>
+      <TouchableOpacity style={styles.footerIcon} onPress={gotToReferral}>
         <Ionicons name="people-outline" size={24} color="black" />
-        <Text>Refferals</Text>
+        <Text>Referral</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.footerIcon} onPress={gotToProfile}>
         <Ionicons name="person-outline" size={24} color="black" />

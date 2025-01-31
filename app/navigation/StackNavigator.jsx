@@ -2,8 +2,9 @@ import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import RegisterScreen from "../screens/RegisterScreen";
 import LoginScreen from "../screens/LoginScreen";
-import HomeScreen from "../screens/HomeScreen"; // Example Home screen
-import UserProfile from "../screens/UserProfile"; // Example Home screen
+import HomeScreen from "../screens/HomeScreen";
+import UserProfile from "../screens/UserProfile";
+import ReferralScreen from "../screens/referral";
 
 const Stack = createStackNavigator();
 
@@ -29,6 +30,11 @@ const StackNavigator = () => {
         name="Profile"
         component={UserProfile}
         options={{ title: "User profile", headerShown: false }}
+      />
+      <Stack.Screen
+        name="Referral"
+        component={ReferralScreen}
+        options={{ title: "Referral Screen", headerShown: false }}
       />
     </Stack.Navigator>
   );

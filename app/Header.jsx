@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-const Header = () => {
+const Header = ({ navigation }) => {
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>Inc Cash</Text>

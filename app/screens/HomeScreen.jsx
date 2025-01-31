@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import Header from "../Header";
+import Footer from "../Footer";
 import {
   View,
   Text,
@@ -67,13 +69,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>Inc Cash</Text>
-        <TouchableOpacity style={styles.earnButton}>
-          <Text style={styles.earnButtonText}>Earn $12</Text>
-        </TouchableOpacity>
-      </View>
+      <Header navigation={navigation} />
 
       {/* Currency Selector */}
       {/* <Picker
@@ -125,20 +121,7 @@ const HomeScreen = ({ navigation }) => {
         keyExtractor={(item) => item.id}
       />
 
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.footerIcon}>
-          <Ionicons name="home-outline" size={24} color="black" />
-          <Text>Home</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerIcon}>
-          <Ionicons name="people-outline" size={24} color="black" />
-          <Text>Refferals</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerIcon} onPress={gotToProfile}>
-          <Ionicons name="person-outline" size={24} color="black" />
-          <Text>Account</Text>
-        </TouchableOpacity>
-      </View>
+      <Footer navigation={navigation} />
     </View>
   );
 };
@@ -238,225 +221,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
-// import React, { useState, useEffect } from "react";
-// import {
-//   View,
-//   Text,
-//   TextInput,
-//   Button,
-//   ScrollView,
-//   StyleSheet,
-//   TouchableOpacity,
-// } from "react-native";
-// import RNPickerSelect from "react-native-picker-select";
-// import axios from "axios";
-// import Icon from "react-native-vector-icons/FontAwesome";
-
-// const currencyAPI = "https://api.exchangerate-api.com/v4/latest/USD"; // Example API to fetch USD conversion rates
-
-// const HomeScreen = ({ navigation }) => {
-//   const [selectedCountry, setSelectedCountry] = useState(null);
-//   const [conversionRate, setConversionRate] = useState(null);
-//   const [usdAmount, setUsdAmount] = useState("");
-//   const [convertedAmount, setConvertedAmount] = useState("");
-//   const [recentTransactions, setRecentTransactions] = useState([]);
-
-//   useEffect(() => {
-//     // Fetch recent transactions from local state or API
-//     setRecentTransactions([
-//       { id: 1, currency: "EUR", amount: 100 },
-//       { id: 2, currency: "GBP", amount: 75 },
-//     ]);
-//   }, []);
-
-//   useEffect(() => {
-//     if (selectedCountry) {
-//       fetchConversionRate(selectedCountry);
-//     }
-//   }, [selectedCountry]);
-
-//   const fetchConversionRate = async (countryCode) => {
-//     try {
-//       const response = await axios.get(currencyAPI);
-//       setConversionRate(response.data.rates[countryCode]);
-//     } catch (error) {
-//       console.error("Error fetching conversion rate: ", error);
-//     }
-//   };
-
-//   const handleUsdInputChange = (text) => {
-//     setUsdAmount(text);
-//     if (conversionRate) {
-//       setConvertedAmount((parseFloat(text) * conversionRate).toFixed(2));
-//     }
-//   };
-
-//   const handleNextButton = () => {
-//     console.log("Next Button Pressed");
-//   };
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       {/* Dropdown for country selection */}
-//       <View style={styles.inputContainer}>
-//         <Text>Select Country:</Text>
-//         <RNPickerSelect
-//           onValueChange={(value) => setSelectedCountry(value)}
-//           items={[
-//             { label: "Canada (CAD)", value: "CAD" },
-//             { label: "European Union (EUR)", value: "EUR" },
-//             { label: "United Kingdom (GBP)", value: "GBP" },
-//             { label: "India (INR)", value: "INR" },
-//             // Add more countries as needed
-//           ]}
-//         />
-//       </View>
-
-//       {/* USD to selected country currency input */}
-//       <View style={styles.inputContainer}>
-//         <Text>USD Amount:</Text>
-//         <TextInput
-//           style={styles.textInput}
-//           keyboardType="numeric"
-//           value={usdAmount}
-//           onChangeText={handleUsdInputChange}
-//         />
-//       </View>
-
-//       <View style={styles.inputContainer}>
-//         <Text>Converted Amount:</Text>
-//         <TextInput
-//           style={styles.textInput}
-//           editable={false}
-//           value={convertedAmount}
-//         />
-//       </View>
-
-//       {/* Next Button */}
-//       <TouchableOpacity style={styles.button} onPress={handleNextButton}>
-//         <Text style={styles.buttonText}>Next</Text>
-//       </TouchableOpacity>
-
-//       {/* Recent Transactions */}
-//       <View style={styles.recentTransactionsContainer}>
-//         <Text style={styles.recentTransactionsTitle}>Recent Transactions</Text>
-//         {recentTransactions.map((transaction) => (
-//           <View key={transaction.id} style={styles.transactionItem}>
-//             <Text>
-//               {transaction.currency}: {transaction.amount}
-//             </Text>
-//           </View>
-//         ))}
-//       </View>
-
-//       {/* Bottom Navigation */}
-//       <View style={styles.navBar}>
-//         <TouchableOpacity style={styles.navItem}>
-//           <Icon name="home" size={30} color="black" />
-//           <Text>Home</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.navItem}>
-//           <Icon name="users" size={30} color="black" />
-//           <Text>Referrals</Text>
-//         </TouchableOpacity>
-//         <TouchableOpacity style={styles.navItem}>
-//           <Icon name="user" size={30} color="black" />
-//           <Text>Account</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     padding: 20,
-//   },
-//   inputContainer: {
-//     marginVertical: 10,
-//   },
-//   textInput: {
-//     height: 40,
-//     borderColor: "#ccc",
-//     borderWidth: 1,
-//     borderRadius: 5,
-//     paddingLeft: 10,
-//   },
-//   button: {
-//     backgroundColor: "#007bff",
-//     paddingVertical: 15,
-//     borderRadius: 5,
-//     marginVertical: 20,
-//     alignItems: "center",
-//   },
-//   buttonText: {
-//     color: "#fff",
-//     fontSize: 16,
-//   },
-//   recentTransactionsContainer: {
-//     marginVertical: 20,
-//   },
-//   recentTransactionsTitle: {
-//     fontSize: 18,
-//     fontWeight: "bold",
-//   },
-//   transactionItem: {
-//     marginVertical: 5,
-//   },
-//   navBar: {
-//     flexDirection: "row",
-//     justifyContent: "space-around",
-//     paddingVertical: 10,
-//     backgroundColor: "#f8f8f8",
-//     borderTopWidth: 1,
-//     borderTopColor: "#ddd",
-//   },
-//   navItem: {
-//     alignItems: "center",
-//   },
-// });
-
-// export default HomeScreen;
-
-// import React from "react";
-// import {
-//   Text,
-//   View,
-//   Button,
-//   TextInput,
-//   Pressable,
-//   TouchableOpacity,
-//   StyleSheet,
-//   Image,
-// } from "react-native";
-// import { useAuth } from "../context/AuthContext";
-
-// const HomeScreen = ({ navigation }) => {
-//   const { user, logout } = useAuth();
-
-//   return (
-//     <View style={styles.container}>
-//       <Text>Welcome, {user?.email}!</Text>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     padding: 20,
-//     backgroundColor: "#FFFFFF",
-//   },
-//   title: {
-//     fontSize: 32,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//     textAlign: "center",
-//     color: "#333",
-//   },
-// });
-
-// export default HomeScreen;

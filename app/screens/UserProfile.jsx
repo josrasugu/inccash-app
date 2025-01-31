@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
-
 import {
   View,
   Text,
@@ -43,33 +42,24 @@ const UserProfile = ({ navigation }) => {
       </View>
     );
   }
-
-  if (!userData) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Error loading user data</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
-      <Header />
+      <Header navigation={navigation} />
       <Text style={styles.title}>User Profile</Text>
       <View style={styles.profileContainer}>
-        <Text style={styles.detailText}>First Name: {userData.firstName}</Text>
+        <Text style={styles.detailText}>First Name: {userData?.firstName}</Text>
         <Text style={styles.detailText}>
-          Middle Name: {userData.middleName}
+          Middle Name: {userData?.middleName}
         </Text>
-        <Text style={styles.detailText}>Last Name: {userData.lastName}</Text>
-        <Text style={styles.detailText}>Email: {userData.email}</Text>
-        <Text style={styles.detailText}>Status: {userData.status}</Text>
-        <Text style={styles.detailText}>Balance: ${userData.balance}</Text>
+        <Text style={styles.detailText}>Last Name: {userData?.lastName}</Text>
+        <Text style={styles.detailText}>Email: {userData?.email}</Text>
+        <Text style={styles.detailText}>Status: {userData?.status}</Text>
+        <Text style={styles.detailText}>Balance: ${userData?.balance}</Text>
       </View>
       <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
         <Text style={styles.editButtonText}>Edit Profile</Text>
       </TouchableOpacity>
-      <Footer />
+      <Footer navigation={navigation} />
     </View>
   );
 };

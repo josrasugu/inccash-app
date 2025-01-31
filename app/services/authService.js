@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const API_URL = "http://10.13.8.14:8000"; // Replace with your actual API endpoint
+const API_URL = "http://192.168.0.111:8000"; // Replace with your actual API endpoint
 
 export const loginUser = async (email, password) => {
   try {
