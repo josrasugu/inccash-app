@@ -45,20 +45,24 @@ const UserProfile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
-      <Text style={styles.title}>User Profile</Text>
-      <View style={styles.profileContainer}>
-        <Text style={styles.detailText}>First Name: {userData?.firstName}</Text>
-        <Text style={styles.detailText}>
-          Middle Name: {userData?.middleName}
-        </Text>
-        <Text style={styles.detailText}>Last Name: {userData?.lastName}</Text>
-        <Text style={styles.detailText}>Email: {userData?.email}</Text>
-        <Text style={styles.detailText}>Status: {userData?.status}</Text>
-        <Text style={styles.detailText}>Balance: ${userData?.balance}</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>User Profile</Text>
+        <View style={styles.profileContainer}>
+          <Text style={styles.detailText}>
+            First Name: {userData?.firstName}
+          </Text>
+          <Text style={styles.detailText}>
+            Middle Name: {userData?.middleName}
+          </Text>
+          <Text style={styles.detailText}>Last Name: {userData?.lastName}</Text>
+          <Text style={styles.detailText}>Email: {userData?.email}</Text>
+          <Text style={styles.detailText}>Status: {userData?.status}</Text>
+          <Text style={styles.detailText}>Balance: ${userData?.balance}</Text>
+        </View>
+        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
+          <Text style={styles.editButtonText}>Edit Profile</Text>
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-        <Text style={styles.editButtonText}>Edit Profile</Text>
-      </TouchableOpacity>
       <Footer navigation={navigation} />
     </View>
   );
@@ -68,6 +72,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+    justifyContent: "space-between",
+  },
+  content: {
+    flex: 1,
   },
   loaderContainer: {
     flex: 1,

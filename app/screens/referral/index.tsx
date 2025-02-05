@@ -32,13 +32,15 @@ const ReferralScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
-      <Text style={styles.header}>Referral List</Text>
-      <FlatList
-        data={referralsData}
-        renderItem={renderReferralItem}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.listContainer}
-      />
+      <View style={styles.content}>
+        <Text style={styles.header}>Referral List</Text>
+        <FlatList
+          data={referralsData}
+          renderItem={renderReferralItem}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContainer}
+        />
+      </View>
       <Footer navigation={navigation} />
     </View>
   );
@@ -48,6 +50,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+    justifyContent: "space-between",
+  },
+  content: {
+    flex: 1,
   },
   header: {
     fontSize: 24,

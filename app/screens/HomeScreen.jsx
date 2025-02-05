@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../Header";
 import Footer from "../Footer";
 import {
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   FlatList,
   StyleSheet,
+  Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import RNPickerSelect from "react-native-picker-select";
+import { SelectList } from "react-native-dropdown-select-list";
+import { exchangeRates } from "../services/transactionService";
+import { TextInput } from "react-native-paper";
+const base64America =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAVFBMVEXsxsvjrLPMa3fRfolXVoPcl5+wUl68PEyUboljYopEQ3VdXIbUgYtUU36fQFe6p6q1mp23g5WuhYqqeoCpYHbCpbW7kqPJjJmyj5SwcoahcnhQS3iZVZQdAAAAZElEQVQY01XNVw6AMAwD0ABmlFL25v73JCqqYp7yZbmuoMV3fU1W0cwheGATMmge4FuHZ83JIlp38A7YMzLqvtaBgKsrzGz9qSSnNMnB+STpZaczvJOZ37+5IYsYNkgV9fHM/QJxQQWCpgcZfAAAAABJRU5ErkJggg==";
+const base64Kenya =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAPCAMAAAA4caRkAAAAVFBMVEUAZgAAAAC7AADMPz9/sn9/f3/fiIikJSWzFRG0AAArAAAqKiqNiYm+TEfORUUpcSkOaQ4BAQEsTgCjAABBAABAAADkmZmGoYKFoIBxcXFwcHApKSlUn7UGAAAAW0lEQVQY062OSQ6AIAwAKy5AAdnc/f8/5dJ6UOLFOTSZSdMUmnc+u4llRPPsBzrcT+49YdWgLBu0hBSDkGwgiFmPemK7O+YlI1ttv3q/I9byz8YGRPDJJR/gZy5oxQRymFJhQgAAAABJRU5ErkJggg==";
+
 const HomeScreen = ({ navigation }) => {
   const [selectedCountry, setSelectedCountry] = useState("USD");
   const [amount, setAmount] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = React.useState("");
+  const [rates, setExchangeRates] = useState([]);
+  const [rateOptions, setRateOptions] = useState([]);
+  const [selectedCountryImg, setSelectedCountryImg] = useState("");
+  const [selectedCountryCurrency, setSelectedCountryCurrency] = useState("");
+  // setSelectedCountryImg(base64Kenya);
   const [transactions, setTransactions] = useState([
     {
       id: "1",
@@ -38,9 +52,37 @@ const HomeScreen = ({ navigation }) => {
     },
   ]);
 
+  const handleSelectionChange = (val) => {
+    setSelected(val);
+    rates.forEach((rate) => {
+      if (rate.country_id == val) {
+        setSelectedCountryImg(rate.flag_icon);
+        setSelectedCountryCurrency(rate.currency_code);
+      }
+    });
+  };
+
+  useEffect(() => {
+    getExchangeRates();
+  }, []);
+  const getExchangeRates = async () => {
+    setSelectedCountryImg(base64Kenya);
+    try {
+      const response = await exchangeRates();
+      const rateOpts = [];
+      response.data.forEach((rate) => {
+        rateOpts.push({ key: rate.country_id, value: rate.name });
+      });
+      setRateOptions(rateOpts);
+      setExchangeRates(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      setLoading(false);
+    }
+  };
   const handleCountryChange = (country) => {
     setSelectedCountry(country);
-    // Implement currency conversion logic here
   };
 
   const handleAmountChange = (value) => {
@@ -70,57 +112,70 @@ const HomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Header navigation={navigation} />
+      <View style={styles.content}>
+        <View style={styles.pickerSelect}>
+          <SelectList
+            setSelected={handleSelectionChange}
+            data={rateOptions}
+            save="key"
+          />
+        </View>
+        <View style={styles.inputContainer}>
+          <View style={[styles.inputColumn, { flex: 1, marginRight: 10 }]}>
+            <View style={styles.flagLabel}>
+              <View style={[{ flex: 0.2 }]}>
+                <Image source={{ uri: base64America }} style={styles.image} />
+              </View>
+              <View style={[{ flex: 1 }]}>
+                <Text style={[{ fontSize: 25, color: "#ccc" }]}>USD</Text>
+              </View>
+            </View>
+            <TextInput
+              style={[styles.input]}
+              placeholder="0"
+              keyboardType="numeric"
+              value={amount}
+              onChangeText={handleAmountChange}
+            />
+          </View>
+          <View style={[styles.inputColumn, { flex: 1 }]}>
+            <View style={styles.flagLabel}>
+              <View style={[{ flex: 0.2 }]}>
+                <Image
+                  source={{
+                    uri:
+                      selectedCountryImg != ""
+                        ? selectedCountryImg
+                        : base64Kenya,
+                  }}
+                  style={styles.image}
+                />
+              </View>
+              <View style={[{ flex: 1 }]}>
+                <Text style={[{ fontSize: 25, color: "#ccc" }]}>
+                  {selectedCountryImg != "" ? selectedCountryCurrency : "KES"}
+                </Text>
+              </View>
+            </View>
+            <TextInput
+              style={[styles.input]}
+              placeholder="0"
+              value={amount ? `${(parseFloat(amount) * 75).toFixed(2)}` : ""}
+            />
+          </View>
+        </View>
 
-      {/* Currency Selector */}
-      {/* <Picker
-        selectedValue={selectedCountry}
-        style={styles.picker}
-        onValueChange={handleCountryChange}
-      >
-        <Picker.Item label="USD" value="USD" />
-        <Picker.Item label="INR" value="INR" />
-        <Picker.Item label="EUR" value="EUR" />
-        <Picker.Item label="GBP" value="GBP" />
-      </Picker> */}
-      <View style={styles.pickerSelect}>
-        <RNPickerSelect
-          onValueChange={handleCountryChange}
-          items={[
-            { label: "Canada (CAD)", value: "CAD" },
-            { label: "European Union (EUR)", value: "EUR" },
-            { label: "United Kingdom (GBP)", value: "GBP" },
-            { label: "India (INR)", value: "INR" },
-          ]}
+        <TouchableOpacity style={styles.nextButton}>
+          <Text style={styles.nextButtonText}>Next</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.transactionsTitle}>Recent Transactions</Text>
+        <FlatList
+          data={transactions}
+          renderItem={renderTransaction}
+          keyExtractor={(item) => item.id}
         />
       </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          placeholder="Amount in USD"
-          keyboardType="numeric"
-          value={amount}
-          onChangeText={handleAmountChange}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={`Amount in ${selectedCountry}`}
-          editable={false}
-          value={amount ? `${(parseFloat(amount) * 75).toFixed(2)}` : ""}
-        />
-      </View>
-
-      <TouchableOpacity style={styles.nextButton}>
-        <Text style={styles.nextButtonText}>Next</Text>
-      </TouchableOpacity>
-
-      <Text style={styles.transactionsTitle}>Recent Transactions</Text>
-      <FlatList
-        data={transactions}
-        renderItem={renderTransaction}
-        keyExtractor={(item) => item.id}
-      />
-
       <Footer navigation={navigation} />
     </View>
   );
@@ -130,6 +185,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
+    justifyContent: "space-between",
+  },
+  content: {
+    flex: 1,
   },
   header: {
     flexDirection: "row",
@@ -153,21 +212,35 @@ const styles = StyleSheet.create({
     color: "#0074D9",
     fontSize: 16,
   },
+  image: {
+    width: 25,
+    height: 18,
+  },
   picker: {
     height: 50,
     width: "100%",
     marginTop: 20,
   },
   inputContainer: {
-    marginTop: 20,
     paddingHorizontal: 20,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
+  },
+  flagLabel: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  inputColumn: {},
+  input: {
+    height: 60,
+    borderColor: "gray",
+    borderWidth: 1,
     borderRadius: 5,
+    paddingLeft: 10,
+    fontSize: 26,
+    backgroundColor: "#F9F9F9",
   },
   nextButton: {
     backgroundColor: "#AAD0F2",
@@ -214,7 +287,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pickerSelect: {
-    backgroundColor: "#F0F0F0",
+    backgroundColor: "#FFFFFF",
     borderRadius: 20,
     margin: 20,
   },
