@@ -12,7 +12,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { SelectList } from "react-native-dropdown-select-list";
 import { exchangeRates } from "../services/transactionService";
-import { TextInput } from "react-native-paper";
+import { TextInput, Button } from "react-native-paper";
 const base64America =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAVFBMVEXsxsvjrLPMa3fRfolXVoPcl5+wUl68PEyUboljYopEQ3VdXIbUgYtUU36fQFe6p6q1mp23g5WuhYqqeoCpYHbCpbW7kqPJjJmyj5SwcoahcnhQS3iZVZQdAAAAZElEQVQY01XNVw6AMAwD0ABmlFL25v73JCqqYp7yZbmuoMV3fU1W0cwheGATMmge4FuHZ83JIlp38A7YMzLqvtaBgKsrzGz9qSSnNMnB+STpZaczvJOZ37+5IYsYNkgV9fHM/QJxQQWCpgcZfAAAAABJRU5ErkJggg==";
 const base64Kenya =
@@ -27,7 +27,6 @@ const HomeScreen = ({ navigation }) => {
   const [rateOptions, setRateOptions] = useState([]);
   const [selectedCountryImg, setSelectedCountryImg] = useState("");
   const [selectedCountryCurrency, setSelectedCountryCurrency] = useState("");
-  // setSelectedCountryImg(base64Kenya);
   const [transactions, setTransactions] = useState([
     {
       id: "1",
@@ -61,12 +60,12 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
-
   useEffect(() => {
     getExchangeRates();
   }, []);
   const getExchangeRates = async () => {
     setSelectedCountryImg(base64Kenya);
+    selectedCountryCurrency("KES");
     try {
       const response = await exchangeRates();
       const rateOpts = [];
@@ -118,6 +117,11 @@ const HomeScreen = ({ navigation }) => {
             setSelected={handleSelectionChange}
             data={rateOptions}
             save="key"
+            inputStyles={[{ fontSize: 22 }]}
+            boxStyles={styles.selectBox}
+            dropdownStyles={styles.dropdown}
+            dropdownTextStyles={styles.dropdownText}
+            maxHeight={200}
           />
         </View>
         <View style={styles.inputContainer}>
@@ -166,7 +170,14 @@ const HomeScreen = ({ navigation }) => {
         </View>
 
         <TouchableOpacity style={styles.nextButton}>
-          <Text style={styles.nextButtonText}>Next</Text>
+          <Button
+            style={[{ width: "100%" }]}
+            labelStyle={[{ fontSize: 22 }]}
+            mode="outlined"
+            onPress={() => console.log("Pressed")}
+          >
+            Next
+          </Button>
         </TouchableOpacity>
 
         <Text style={styles.transactionsTitle}>Recent Transactions</Text>
@@ -235,29 +246,19 @@ const styles = StyleSheet.create({
   inputColumn: {},
   input: {
     height: 60,
-    borderColor: "gray",
-    borderWidth: 1,
-    borderRadius: 5,
     paddingLeft: 10,
     fontSize: 26,
     backgroundColor: "#F9F9F9",
   },
   nextButton: {
-    backgroundColor: "#AAD0F2",
-    paddingVertical: 12,
     alignItems: "center",
     marginTop: 20,
     marginHorizontal: 20,
-    borderRadius: 20,
-  },
-  nextButtonText: {
-    color: "#0074D9",
-    fontSize: 18,
   },
   transactionsTitle: {
-    fontSize: 18,
+    fontSize: 30,
     fontWeight: "bold",
-    marginTop: 30,
+    marginTop: 50,
     marginLeft: 20,
   },
   transactionRow: {
@@ -287,9 +288,29 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   pickerSelect: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 20,
+    backgroundColor: "#F9F9F9",
     margin: 20,
+  },
+  selectBox: {
+    backgroundColor: "#F9F9F9",
+    height: 60,
+    marginBottom: 10,
+    paddingLeft: 10,
+    fontSize: 22,
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
+    borderBottomWidth: 2,
+  },
+  dropdown: {
+    backgroundColor: "#f8f8f8",
+    borderRadius: 8,
+    padding: 5,
+    fontSize: 22,
+  },
+  dropdownText: {
+    fontSize: 22,
+    color: "#000000", // Customize the text color for dropdown options
   },
 });
 
