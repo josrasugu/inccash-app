@@ -76,6 +76,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    margin: 20,
   },
   loaderContainer: {
     flex: 1,

@@ -10,9 +10,10 @@ import {
   Image,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons"; // Import icons
 import { SelectList } from "react-native-dropdown-select-list";
 import { exchangeRates } from "../services/transactionService";
-import { TextInput, Button } from "react-native-paper";
+import { TextInput, Button, Card } from "react-native-paper";
 const base64America =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAVFBMVEXsxsvjrLPMa3fRfolXVoPcl5+wUl68PEyUboljYopEQ3VdXIbUgYtUU36fQFe6p6q1mp23g5WuhYqqeoCpYHbCpbW7kqPJjJmyj5SwcoahcnhQS3iZVZQdAAAAZElEQVQY01XNVw6AMAwD0ABmlFL25v73JCqqYp7yZbmuoMV3fU1W0cwheGATMmge4FuHZ83JIlp38A7YMzLqvtaBgKsrzGz9qSSnNMnB+STpZaczvJOZ37+5IYsYNkgV9fHM/QJxQQWCpgcZfAAAAABJRU5ErkJggg==";
 const base64Kenya =
@@ -20,9 +21,10 @@ const base64Kenya =
 
 const HomeScreen = ({ navigation }) => {
   const [selectedCountry, setSelectedCountry] = useState("USD");
-  const [amount, setAmount] = useState("");
+  const [amountUsd, setAmount] = useState("");
+  const [amountOther, setAmountOther] = useState("");
   const [loading, setLoading] = useState(false);
-  const [selected, setSelected] = React.useState("");
+  const [selectedCountryId, setSelected] = React.useState("");
   const [rates, setExchangeRates] = useState([]);
   const [rateOptions, setRateOptions] = useState([]);
   const [selectedCountryImg, setSelectedCountryImg] = useState("");
@@ -50,9 +52,13 @@ const HomeScreen = ({ navigation }) => {
       status: "Completed",
     },
   ]);
-
+  useEffect(() => {
+    getExchangeRates();
+  }, []);
   const handleSelectionChange = (val) => {
     setSelected(val);
+    setAmount(0);
+    setAmountOther(0);
     rates.forEach((rate) => {
       if (rate.country_id == val) {
         setSelectedCountryImg(rate.flag_icon);
@@ -60,17 +66,22 @@ const HomeScreen = ({ navigation }) => {
       }
     });
   };
-  useEffect(() => {
-    getExchangeRates();
-  }, []);
   const getExchangeRates = async () => {
-    setSelectedCountryImg(base64Kenya);
-    selectedCountryCurrency("KES");
+    // setSelectedCountryImg(base64Kenya);
+    // selectedCountryCurrency("KES");
     try {
       const response = await exchangeRates();
       const rateOpts = [];
       response.data.forEach((rate) => {
-        rateOpts.push({ key: rate.country_id, value: rate.name });
+        const displayText =
+          rate.name +
+          " ( " +
+          " 1$ = " +
+          rate.currency_code +
+          " " +
+          rate.rate +
+          ".00 )";
+        rateOpts.push({ key: rate.country_id, value: displayText });
       });
       setRateOptions(rateOpts);
       setExchangeRates(response.data);
@@ -84,28 +95,70 @@ const HomeScreen = ({ navigation }) => {
     setSelectedCountry(country);
   };
 
-  const handleAmountChange = (value) => {
-    setAmount(value);
+  const handleUsdAmountChange = (value) => {
+    rates.forEach((rate) => {
+      if (rate.country_id == selectedCountryId) {
+        setAmount(value);
+        setAmountOther((parseFloat(value) * rate.rate).toFixed(2));
+      }
+    });
+  };
+  const handleOtherAmountChange = (value) => {
+    rates.forEach((rate) => {
+      if (rate.country_id == selectedCountryId) {
+        setAmount((parseFloat(value) / rate.rate).toFixed(2));
+        setAmountOther(value);
+      }
+    });
   };
 
   const gotToProfile = () => {
     navigation.navigate("Profile");
   };
-
-  const renderTransaction = ({ item }) => (
-    <View style={styles.transactionRow}>
-      <Text style={styles.transactionText}>{item.fullName}</Text>
-      <Text style={styles.transactionText}>{item.amount}</Text>
-      <Text style={styles.transactionText}>{item.time}</Text>
-      <Text
-        style={[
-          styles.transactionText,
-          item.status === "Completed" ? styles.completed : styles.pending,
-        ]}
-      >
-        {item.status}
-      </Text>
-    </View>
+  const renderItem = ({ item }) => (
+    <Card style={styles.listCard}>
+      <View style={styles.listRow}>
+        {/* Icon on the left */}
+        <MaterialIcons
+          name={
+            item.status === "Completed"
+              ? "check-circle"
+              : item.status === "Pending"
+              ? "hourglass-empty"
+              : "error"
+          }
+          size={30}
+          color={
+            item.status === "Completed"
+              ? "green"
+              : item.status === "Pending"
+              ? "orange"
+              : "red"
+          }
+        />
+        {/* Transaction details */}
+        <View style={styles.listDetails}>
+          <View style={{ flexDirection: "row", marginBottom: 10 }}>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontWeight: "bold" }}>{item.status}</Text>
+              <Text style={{ textAlign: "left", color: "gray" }}>
+                {item.time}
+              </Text>
+            </View>
+            <View style={{ flex: 1.5 }}>
+              <Text style={{ textAlign: "left", color: "gray", fontSize: 16 }}>
+                {item.fullName}
+              </Text>
+            </View>
+            <View style={{ flex: 1 }}>
+              <Text style={{ fontWeight: "bold", fontSize: 22 }}>
+                {item.amount}
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </Card>
   );
 
   return (
@@ -138,8 +191,8 @@ const HomeScreen = ({ navigation }) => {
               style={[styles.input]}
               placeholder="0"
               keyboardType="numeric"
-              value={amount}
-              onChangeText={handleAmountChange}
+              value={amountUsd}
+              onChangeText={handleUsdAmountChange}
             />
           </View>
           <View style={[styles.inputColumn, { flex: 1 }]}>
@@ -164,27 +217,26 @@ const HomeScreen = ({ navigation }) => {
             <TextInput
               style={[styles.input]}
               placeholder="0"
-              value={amount ? `${(parseFloat(amount) * 75).toFixed(2)}` : ""}
+              value={amountOther}
+              onChangeText={handleOtherAmountChange}
             />
           </View>
         </View>
-
         <TouchableOpacity style={styles.nextButton}>
           <Button
             style={[{ width: "100%" }]}
             labelStyle={[{ fontSize: 22 }]}
             mode="outlined"
-            onPress={() => console.log("Pressed")}
+            onPress={() => navigation.navigate("Recipient")}
           >
             Next
           </Button>
         </TouchableOpacity>
-
         <Text style={styles.transactionsTitle}>Recent Transactions</Text>
         <FlatList
           data={transactions}
-          renderItem={renderTransaction}
           keyExtractor={(item) => item.id}
+          renderItem={renderItem}
         />
       </View>
       <Footer navigation={navigation} />
@@ -200,6 +252,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    margin: 20,
   },
   header: {
     flexDirection: "row",
@@ -233,7 +286,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   inputContainer: {
-    paddingHorizontal: 20,
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
@@ -253,13 +305,12 @@ const styles = StyleSheet.create({
   nextButton: {
     alignItems: "center",
     marginTop: 20,
-    marginHorizontal: 20,
   },
   transactionsTitle: {
-    fontSize: 30,
+    fontSize: 22,
     fontWeight: "bold",
     marginTop: 50,
-    marginLeft: 20,
+    marginBottom: 10,
   },
   transactionRow: {
     flexDirection: "row",
@@ -289,7 +340,7 @@ const styles = StyleSheet.create({
   },
   pickerSelect: {
     backgroundColor: "#F9F9F9",
-    margin: 20,
+    marginBottom: 20,
   },
   selectBox: {
     backgroundColor: "#F9F9F9",
@@ -311,6 +362,38 @@ const styles = StyleSheet.create({
   dropdownText: {
     fontSize: 22,
     color: "#000000", // Customize the text color for dropdown options
+  },
+
+  listCard: {
+    marginBottom: 10,
+    borderRadius: 8,
+    padding: 10,
+    elevation: 3,
+  },
+  listRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  listDetails: {
+    marginLeft: 10,
+    flex: 1,
+  },
+  listStatus: {
+    fontWeight: "bold",
+    fontSize: 16,
+  },
+  listTime: {
+    fontSize: 12,
+    color: "gray",
+  },
+  listAmount: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "black",
+  },
+  listMessage: {
+    fontSize: 12,
+    color: "gray",
   },
 });
 
