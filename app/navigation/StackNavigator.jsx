@@ -6,6 +6,7 @@ import HomeScreen from "../screens/HomeScreen";
 import UserProfile from "../screens/UserProfile";
 import ReferralScreen from "../screens/referral/indexScreen";
 import SelectRecipient from "../screens/transaction/recipientScreen";
+import AddRecipient from "../screens/transaction/addRecipientScreen";
 
 const Stack = createStackNavigator();
 
@@ -36,6 +37,11 @@ const StackNavigator = () => {
         name="Referral"
         component={ReferralScreen}
         options={{ title: "Referral Screen", headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddRecipient"
+        component={AddRecipient}
+        options={{ title: "Add Recipient", headerShown: true }}
       />
       <Stack.Screen
         name="Recipient"

@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TextInput, Button, Card, List, MD3Colors } from "react-native-paper";
+import { beneficiaries } from "../../services/transactionService";
 
-const SelectRecipient = () => {
+const SelectRecipient = ({ navigation }) => {
   const [recipient, setRecipient] = useState("");
   const [searchOptions, setSearchOptions] = useState([]);
+  const [beneficiaryOptions, setBeneficiaryOptions] = useState([]);
   const handleSelectionChange = (val) => {
     console.log(val);
   };
@@ -17,6 +19,28 @@ const SelectRecipient = () => {
     console.log("Recipient:", recipient);
   };
 
+  useEffect(() => {
+    getBeneficiaries();
+  }, []);
+
+  const getBeneficiaries = async () => {
+    try {
+      const response = await beneficiaries();
+      const beneficiaryOpts = [];
+      response.data.forEach((beneficiary) => {
+        const displayText =
+          beneficiary.first_name + " " + beneficiary.last_name;
+        beneficiaryOpts.push({ key: beneficiary.id, value: displayText });
+      });
+      setBeneficiaryOptions(beneficiaryOpts);
+      //   setExchangeRates(response.data);
+      //   setLoading(false);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+      //   setLoading(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.content}>
@@ -24,6 +48,7 @@ const SelectRecipient = () => {
           <List.Item
             title="Add recipient"
             titleStyle={styles.addTitle}
+            onPress={() => navigation.navigate("AddRecipient")}
             left={() => (
               <List.Icon
                 color={"#000000"}
@@ -36,7 +61,7 @@ const SelectRecipient = () => {
         <View style={styles.pickerSelect}>
           <SelectList
             setSelected={handleSelectionChange}
-            data={searchOptions}
+            data={beneficiaryOptions}
             save="key"
             inputStyles={[{ fontSize: 22 }]}
             boxStyles={styles.selectBox}
@@ -55,10 +80,6 @@ const SelectRecipient = () => {
             Next
           </Button>
         </TouchableOpacity>
-        {/* 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Select Recipient</Text>
-      </TouchableOpacity> */}
       </View>
     </View>
   );

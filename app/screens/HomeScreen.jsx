@@ -75,8 +75,7 @@ const HomeScreen = ({ navigation }) => {
       response.data.forEach((rate) => {
         const displayText =
           rate.name +
-          " ( " +
-          " 1$ = " +
+          " ( 1$ = " +
           rate.currency_code +
           " " +
           rate.rate +
