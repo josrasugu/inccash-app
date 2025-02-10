@@ -13,18 +13,14 @@ export default function AddRecipient({ navigation }) {
   });
 
   const handleSubmit = async () => {
-    console.log(formData);
     try {
       const response = await AddBeneficiary(formData);
       if (response.success) {
-        console.log("abc", response);
         navigation.navigate("Recipient");
       } else {
-        console.log("abc", response);
         // setMessage(response.message);
       }
     } catch (error) {
-      console.log("sef", error);
       //   setMessage(error.message);
     }
   };

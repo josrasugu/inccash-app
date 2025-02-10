@@ -7,6 +7,8 @@ import UserProfile from "../screens/UserProfile";
 import ReferralScreen from "../screens/referral/indexScreen";
 import SelectRecipient from "../screens/transaction/recipientScreen";
 import AddRecipient from "../screens/transaction/addRecipientScreen";
+import PaymentDetails from "../screens/transaction/paymentDetailsScreen";
+import PaymentConfirmation from "../screens/transaction/confirmationScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +49,16 @@ const StackNavigator = () => {
         name="Recipient"
         component={SelectRecipient}
         options={{ title: "Select Recipient", headerShown: true }}
+      />
+      <Stack.Screen
+        name="PaymentDetails"
+        component={PaymentDetails}
+        options={{ title: "Confirm transfer", headerShown: true }}
+      />
+      <Stack.Screen
+        name="PaymentConfirmation"
+        component={PaymentConfirmation}
+        options={{ title: "Confirm transfer", headerShown: false }}
       />
     </Stack.Navigator>
   );

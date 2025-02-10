@@ -14,6 +14,8 @@ import { MaterialIcons } from "@expo/vector-icons"; // Import icons
 import { SelectList } from "react-native-dropdown-select-list";
 import { exchangeRates } from "../services/transactionService";
 import { TextInput, Button, Card } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
+
 const base64America =
   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABcAAAAMCAMAAAC+5dbKAAAAVFBMVEXsxsvjrLPMa3fRfolXVoPcl5+wUl68PEyUboljYopEQ3VdXIbUgYtUU36fQFe6p6q1mp23g5WuhYqqeoCpYHbCpbW7kqPJjJmyj5SwcoahcnhQS3iZVZQdAAAAZElEQVQY01XNVw6AMAwD0ABmlFL25v73JCqqYp7yZbmuoMV3fU1W0cwheGATMmge4FuHZ83JIlp38A7YMzLqvtaBgKsrzGz9qSSnNMnB+STpZaczvJOZ37+5IYsYNkgV9fHM/QJxQQWCpgcZfAAAAABJRU5ErkJggg==";
 const base64Kenya =
@@ -56,6 +58,7 @@ const HomeScreen = ({ navigation }) => {
     getExchangeRates();
   }, []);
   const handleSelectionChange = (val) => {
+    SecureStore.setItemAsync("currency_country", val);
     setSelected(val);
     setAmount(0);
     setAmountOther(0);
@@ -90,29 +93,27 @@ const HomeScreen = ({ navigation }) => {
       setLoading(false);
     }
   };
-  const handleCountryChange = (country) => {
-    setSelectedCountry(country);
-  };
-
   const handleUsdAmountChange = (value) => {
     rates.forEach((rate) => {
       if (rate.country_id == selectedCountryId) {
+        const exchangedAmount = (parseFloat(value) * rate.rate).toFixed(2);
         setAmount(value);
-        setAmountOther((parseFloat(value) * rate.rate).toFixed(2));
+        setAmountOther(exchangedAmount);
+        SecureStore.setItemAsync("usd_amount", value);
+        SecureStore.setItemAsync("other_currency_amount", exchangedAmount);
       }
     });
   };
   const handleOtherAmountChange = (value) => {
     rates.forEach((rate) => {
       if (rate.country_id == selectedCountryId) {
-        setAmount((parseFloat(value) / rate.rate).toFixed(2));
+        const exchangedAmount = (parseFloat(value) / rate.rate).toFixed(2);
+        setAmount(exchangedAmount);
         setAmountOther(value);
+        SecureStore.setItemAsync("usd_amount", value);
+        SecureStore.setItemAsync("other_currency_amount", exchangedAmount);
       }
     });
-  };
-
-  const gotToProfile = () => {
-    navigation.navigate("Profile");
   };
   const renderItem = ({ item }) => (
     <Card style={styles.listCard}>

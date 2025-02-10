@@ -37,16 +37,6 @@ export default function Index({ navigation }) {
     } catch (error) {
       setMessage(error.message);
     }
-
-    // In a real scenario, send `email` and `password` to your API
-    // For example, using axios:
-    // axios.post('your-api-url', { email, password })
-    //   .then(response => {
-    //     console.log(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.error(error);
-    //   });
   };
 
   const addTodo = () => {

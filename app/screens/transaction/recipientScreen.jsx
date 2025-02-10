@@ -3,22 +3,15 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { SelectList } from "react-native-dropdown-select-list";
 import { TextInput, Button, Card, List, MD3Colors } from "react-native-paper";
 import { beneficiaries } from "../../services/transactionService";
+import * as SecureStore from "expo-secure-store";
 
 const SelectRecipient = ({ navigation }) => {
   const [recipient, setRecipient] = useState("");
   const [searchOptions, setSearchOptions] = useState([]);
   const [beneficiaryOptions, setBeneficiaryOptions] = useState([]);
   const handleSelectionChange = (val) => {
-    console.log(val);
+    SecureStore.setItemAsync("recipient", val);
   };
-  const handleChange = (text) => {
-    setRecipient(text);
-  };
-
-  const handleSubmit = () => {
-    console.log("Recipient:", recipient);
-  };
-
   useEffect(() => {
     getBeneficiaries();
   }, []);
@@ -75,7 +68,7 @@ const SelectRecipient = ({ navigation }) => {
             style={[{ width: "100%" }]}
             labelStyle={[{ fontSize: 22 }]}
             mode="outlined"
-            onPress={() => navigation.navigate("Recipient")}
+            onPress={() => navigation.navigate("PaymentDetails")}
           >
             Next
           </Button>
