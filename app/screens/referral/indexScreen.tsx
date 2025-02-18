@@ -16,7 +16,7 @@ const referralsData = [
   // Add more data as needed
 ];
 
-const ReferralScreen = ({ navigation }) => {
+export default function ReferralScreen({ navigation }) {
   const renderReferralItem = ({ item }) => (
     <View style={styles.referralItem}>
       <Text style={styles.referralName}>{item.name}</Text>
@@ -44,7 +44,7 @@ const ReferralScreen = ({ navigation }) => {
       <Footer navigation={navigation} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -95,4 +95,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReferralScreen;
+// export default ReferralScreen;

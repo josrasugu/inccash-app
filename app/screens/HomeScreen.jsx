@@ -58,12 +58,12 @@ const HomeScreen = ({ navigation }) => {
     getExchangeRates();
   }, []);
   const handleSelectionChange = (val) => {
-    SecureStore.setItemAsync("currency_country", val);
     setSelected(val);
     setAmount(0);
     setAmountOther(0);
     rates.forEach((rate) => {
       if (rate.country_id == val) {
+        SecureStore.setItemAsync("exchange_rate", JSON.stringify(rate));
         setSelectedCountryImg(rate.flag_icon);
         setSelectedCountryCurrency(rate.currency_code);
       }

@@ -6,11 +6,14 @@ import { beneficiaries } from "../../services/transactionService";
 import * as SecureStore from "expo-secure-store";
 
 const SelectRecipient = ({ navigation }) => {
-  const [recipient, setRecipient] = useState("");
-  const [searchOptions, setSearchOptions] = useState([]);
+  const [recipients, setBeneficiaries] = useState([]);
   const [beneficiaryOptions, setBeneficiaryOptions] = useState([]);
   const handleSelectionChange = (val) => {
-    SecureStore.setItemAsync("recipient", val);
+    recipients.forEach((beneficiary) => {
+      if (beneficiary.id == val) {
+        SecureStore.setItemAsync("recipient", JSON.stringify(beneficiary));
+      }
+    });
   };
   useEffect(() => {
     getBeneficiaries();
@@ -19,6 +22,7 @@ const SelectRecipient = ({ navigation }) => {
   const getBeneficiaries = async () => {
     try {
       const response = await beneficiaries();
+      setBeneficiaries(response.data);
       const beneficiaryOpts = [];
       response.data.forEach((beneficiary) => {
         const displayText =

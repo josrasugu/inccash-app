@@ -1,6 +1,6 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import RegisterScreen from "../screens/RegisterScreen";
+import RegisterScreen from "../screens/registration/RegisterScreen";
 import LoginScreen from "../screens/LoginScreen";
 import HomeScreen from "../screens/HomeScreen";
 import UserProfile from "../screens/UserProfile";
@@ -9,6 +9,9 @@ import SelectRecipient from "../screens/transaction/recipientScreen";
 import AddRecipient from "../screens/transaction/addRecipientScreen";
 import PaymentDetails from "../screens/transaction/paymentDetailsScreen";
 import PaymentConfirmation from "../screens/transaction/confirmationScreen";
+import AlmostReady from "../screens/registration/AlmostReadyScreen";
+import AddCustomerAddress from "../screens/registration/AddressScreen";
+import IdentityCard from "../screens/registration/IdentityCardScreen";
 
 const Stack = createStackNavigator();
 
@@ -59,6 +62,21 @@ const StackNavigator = () => {
         name="PaymentConfirmation"
         component={PaymentConfirmation}
         options={{ title: "Confirm transfer", headerShown: false }}
+      />
+      <Stack.Screen
+        name="AlmostReady"
+        component={AlmostReady}
+        options={{ title: "Almost Ready", headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddCustomerAddress"
+        component={AddCustomerAddress}
+        options={{ title: "Address", headerShown: true }}
+      />
+      <Stack.Screen
+        name="IdentityCard"
+        component={IdentityCard}
+        options={{ title: "Identity Card", headerShown: true }}
       />
     </Stack.Navigator>
   );

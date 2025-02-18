@@ -10,8 +10,8 @@ import {
   Image,
   Alert,
 } from "react-native";
-import { useAuth } from "../context/AuthContext";
-import { registerUser } from "../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import { registerUser } from "../../services/authService";
 import appLogoImg from "@/assets/images/app-logo.png";
 
 const RegisterScreen = ({ navigation }) => {
@@ -40,17 +40,16 @@ const RegisterScreen = ({ navigation }) => {
         entity_type: entityType,
         active: 0,
       };
-      const response = await registerUser(userDetails);
-      setMessage(response.message);
-      setSuccess(response.success);
-      // login({ email });
-      if (response.success) {
-        Alert.alert("Account Created", response.message, [
-          { text: "OK", onPress: () => navigation.navigate("Login") },
-        ]);
-      }
+      // const response = await registerUser(userDetails);
+      // setMessage(response.message);
+      // setSuccess(response.success);
+      // if (response.success) {
+      //   Alert.alert("Account Created", response.message, [
+      //     { text: "OK", onPress: () => navigation.navigate("Login") },
+      //   ]);
+      // }
 
-      // navigation.navigate("Home");
+      navigation.navigate("AlmostReady");
     } catch (error) {
       setMessage(error.message);
     }

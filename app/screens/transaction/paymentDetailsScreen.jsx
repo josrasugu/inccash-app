@@ -14,18 +14,19 @@ import * as SecureStore from "expo-secure-store";
 
 const PaymentDetails = ({ navigation }) => {
   const [data, setData] = useState(null);
-  const recipientId = SecureStore.getItem("recipient");
-  const currencyCountryId = SecureStore.getItem("currency_country");
+  const recipient = JSON.parse(SecureStore.getItem("recipient"));
+  const rate = JSON.parse(SecureStore.getItem("exchange_rate"));
   const usdAmount = SecureStore.getItem("usd_amount");
   const otherCurrencyAmount = SecureStore.getItem("other_currency_amount");
-
-  const exchangeRate = "130";
-  const totalChargedPaypal = "$" + usdAmount;
+  console.log(recipient);
+  const exchangeRate = rate.rate;
+  const totalCharged = "$" + usdAmount;
   const transferFee = "$2";
   const transferAmount = usdAmount;
-  const totalToRecipient = "$" + (usdAmount + 2);
-  const recipientFullName = "Josphat Rasugu";
-  const recipientAccountNumber = "0714164793";
+  const totalToRecipient = "$" + (usdAmount - 2);
+  const recipientFullName = recipient.first_name + " " + recipient.last_name;
+  const recipientAccountNumber = recipient.mpesa_no;
+  const paymentMethod = "Mpesa";
 
   useEffect(() => {
     // Replace with your actual API endpoint
@@ -63,7 +64,7 @@ const PaymentDetails = ({ navigation }) => {
       <Card style={styles.card}>
         <Card.Content>
           <Title>Total Charged (Paypal)</Title>
-          <Text>{totalChargedPaypal}</Text>
+          <Text>{totalCharged}</Text>
           <Divider style={styles.divider} />
           <Subheading>Transfer Fee</Subheading>
           <Text>{transferFee}</Text>
@@ -94,7 +95,7 @@ const PaymentDetails = ({ navigation }) => {
       <Card style={styles.card}>
         <Card.Content>
           <Title>Payment Method</Title>
-          <View style={styles.paymentMethod}>
+          <View style={paymentMethod}>
             <IconButton
               icon={data.paymentMethodLogo}
               size={30}
@@ -109,10 +110,11 @@ const PaymentDetails = ({ navigation }) => {
       </Card>
 
       <Button
+        style={{ marginBottom: 40 }}
         mode="contained"
         onPress={() => navigation.navigate("PaymentConfirmation")}
       >
-        Confirm Payment
+        Send
       </Button>
     </ScrollView>
   );
@@ -122,9 +124,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#fff",
   },
   card: {
     marginBottom: 16,
+    backgroundColor: "#fff",
   },
   centered: {
     flex: 1,
@@ -137,10 +141,12 @@ const styles = StyleSheet.create({
   recipientDetails: {
     flexDirection: "row",
     alignItems: "center",
+    fontSize: 22,
   },
   paymentMethod: {
     flexDirection: "row",
     alignItems: "center",
+    fontSize: 22,
   },
 });
 

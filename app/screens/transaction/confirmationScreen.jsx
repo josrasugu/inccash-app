@@ -1,10 +1,14 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Button, Paragraph, Title } from "react-native-paper";
-
+import * as SecureStore from "expo-secure-store";
 const PaymentConfirmation = ({ navigation }) => {
-  const recipientName = "John Doe";
-  const amount = 250;
+  const recipient = JSON.parse(SecureStore.getItem("recipient"));
+  const rate = JSON.parse(SecureStore.getItem("exchange_rate"));
+  const usdAmount = SecureStore.getItem("usd_amount");
+
+  const recipientName = recipient.first_name + " " + recipient.last_name;
+  const amount = "$" + (usdAmount - 2);
   const currency = "USD";
 
   return (
@@ -47,12 +51,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     textAlign: "center",
     marginBottom: 10,
+    padding: 10,
   },
   recipient: {
     fontWeight: "bold",
   },
   amount: {
-    fontSize: 18,
+    fontSize: 24,
+    padding: 10,
     // marginVertical: 20,
     textAlign: "center",
   },

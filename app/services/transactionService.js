@@ -1,7 +1,7 @@
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
-const API_URL = "http://192.168.0.103:8000";
+const API_URL = "http://192.168.0.110:8000";
 
 export const exchangeRates = async () => {
   try {
